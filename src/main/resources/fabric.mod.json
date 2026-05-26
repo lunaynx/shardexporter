@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "Automatically exports shard families while browsing the Bazaar.",
+  "authors": [
+    "Luna <lunaynx@gmail.com>"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "mixins": [
+    "shardexporter.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17",
+    "minecraft": "${minecraft}"
+  }
+}
