@@ -1,6 +1,8 @@
 plugins {
     // This plugin applies the correct loom variant based on the Minecraft version
     id("dev.kikugie.loom-back-compat")
+    id("org.jetbrains.kotlin.jvm")
+    `java-library`
 }
 
 // DO NOT set group = ...!
@@ -20,12 +22,44 @@ val requiredJava: JavaVersion = when {
 val compatibleVersions: List<String> = sc.properties.rawOrNull("mod", "mc_releases")
     ?.asList().orEmpty().map { it.toString() }
 
+repositories {
+    mavenCentral()
+    maven("https://maven.fabricmc.net/")
+    maven("https://maven.teamresourceful.com/repository/maven-public/") {
+        content {
+            includeGroupAndSubgroups("tech.thatgravyboat")
+            includeGroupAndSubgroups("me.owdding")
+            includeGroupAndSubgroups("net.hypixel")
+        }
+    }
+    maven("https://api.modrinth.com/maven") {
+        content {
+            includeGroup("maven.modrinth")
+        }
+    }
+    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1") {
+        content {
+            includeGroup("me.djtheredstoner")
+        }
+    }
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:${sc.current.version}")
     // Applies Mojang Mappings on obfuscated versions
     loomx.applyMojangMappings()
 
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    modImplementation("net.fabricmc:fabric-language-kotlin:${property("deps.fabric_language_kotlin")}")
+    api("tech.thatgravyboat:skyblock-api:${property("deps.skyblock_api")}") {
+        capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${sc.current.version}") }
+    }
+    include("tech.thatgravyboat:skyblock-api:${property("deps.skyblock_api")}") {
+        capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${sc.current.version}-remapped") }
+    }
+
+    testImplementation(kotlin("test"))
 }
 
 loom {
@@ -50,6 +84,10 @@ java {
         vendor = JvmVendorSpec.ADOPTIUM
         languageVersion = JavaLanguageVersion.of(requiredJava.majorVersion)
     }
+}
+
+kotlin {
+    jvmToolchain(requiredJava.majorVersion.toInt())
 }
 
 tasks {
@@ -96,5 +134,9 @@ tasks {
         it.name == "remapJar" || it.name == "remapSourcesJar"
     }.configureEach {
         destinationDirectory = rootProject.layout.buildDirectory.dir("libs")
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }

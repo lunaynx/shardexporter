@@ -9,11 +9,22 @@
   ],
   "license": "MIT",
   "environment": "client",
+  "entrypoints": {
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.luna.shardexporter.ShardExporter"
+      }
+    ]
+  },
   "mixins": [
     "shardexporter.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.17",
+    "fabric-api": "*",
+    "fabric-language-kotlin": ">=1.13.8+kotlin.2.3.0",
+    "skyblock-api": "*",
     "minecraft": "${minecraft}"
   }
 }
