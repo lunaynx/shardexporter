@@ -14,3 +14,9 @@ loomx.loom_version = "1.16-SNAPSHOT"
 mod.mc_compat = "1.21.11"
 mod.mc_archive = "1.21.11"
 mod.mc_releases = ["1.21.11"]
+
+["26.1"]
+deps.fabric_api = "0.149.1+26.1.2"
+mod.mc_compat = "~26.1"
+mod.mc_archive = "26.1"
+mod.mc_releases = ["26.1", "26.1.1", "26.1.2"]

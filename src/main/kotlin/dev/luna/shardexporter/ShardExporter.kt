@@ -55,7 +55,8 @@ object ShardExporter : ClientModInitializer {
         if (!trackingShardsInventory && families.isEmpty()) return
 
         McClient.clipboard = gson.toJson(families.toSortedMap().mapValues { (_, familySet) -> familySet.sorted() })
-        McClient.chat.addMessage(Text.of("Exported shard families to clipboard."))
+        //~ if < 26.1 'addClientSystemMessage' -> 'addMessage'
+        McClient.chat.addClientSystemMessage(Text.of("Exported shard families to clipboard."))
 
         activeFamily = null
         trackingShardsInventory = false

@@ -21,6 +21,12 @@ val requiredJava: JavaVersion = when {
 // This can be used for publishing on Modrinth and Curseforge
 val compatibleVersions: List<String> = sc.properties.rawOrNull("mod", "mc_releases")
     ?.asList().orEmpty().map { it.toString() }
+val skyblockApiCapability = "tech.thatgravyboat:skyblock-api-${sc.current.project}"
+val includedSkyblockApiCapability = if (sc.current.parsed >= "26.1") {
+    skyblockApiCapability
+} else {
+    "$skyblockApiCapability-remapped"
+}
 
 repositories {
     mavenCentral()
@@ -53,10 +59,10 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${property("deps.fabric_language_kotlin")}")
     api("tech.thatgravyboat:skyblock-api:${property("deps.skyblock_api")}") {
-        capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${sc.current.version}") }
+        capabilities { requireCapability(skyblockApiCapability) }
     }
     include("tech.thatgravyboat:skyblock-api:${property("deps.skyblock_api")}") {
-        capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${sc.current.version}-remapped") }
+        capabilities { requireCapability(includedSkyblockApiCapability) }
     }
 
     testImplementation(kotlin("test"))
